@@ -1,0 +1,2 @@
+# wp-shove-off
+Deploy (shove off, like in a boat or canoe) a WordPress installation intended for quick development and deployment of a site. Uses `git` to get the most recent version of WordPress and some plugins. Sets up your wp-config.php and even gets randomly generated keys and salts. Launches the site with maintenance mode ready to be activated (you'll have to activate it). This is on GitHub so that people can add and use as needed. I'm hoping it will become one of those beautiful collaborations.
