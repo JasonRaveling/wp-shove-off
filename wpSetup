@@ -11,12 +11,19 @@ if [[ $proceed != [yY] ]]
 fi
 
 echo "Leave this blank if you want to use ${HOME}/public_html";
-read -p "Enter the HTML root: " htmlRoot;
+read -p "Enter the HTML root directory: " htmlRoot;
 if [ $htmlRoot = "" ]
 	then
 	htmlRoot="${HOME}/public_html";
 fi
+
 htmlRoot="${htmlRoot%/}"; #remove any trailing slash
+
+if [ ! -d $htmlRoot ]
+	then
+	mkdir $htmlRoot;
+fi
+
 pluginDir="${htmlRoot}/wp-content/plugins";
 echo; echo "Don't forget you need to create the database and add the user before the install will work.";
 read -p "Database name: " dbName;
