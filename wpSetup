@@ -123,3 +123,6 @@ perl -ne '
 
 # always clean up after yourself
 rm $htmlRoot/wp-config-sample.php;
+
+echo; echo "Done!";
+echo; echo "If you haven't already created your database, don't forget to do that.";
