@@ -1,0 +1,118 @@
+#!/bin/bash
+
+clear;
+echo "Be careful! This will overwrite files if they already exist! So if you have a current installation of WordPress you should BACK IT UP.";
+read -p "Proceed? [y/N] " proceed;
+if [[ $proceed != [yY] ]] 
+	then
+	echo "You have chosen to exit.";
+	echo;
+	exit 0;
+fi
+
+echo "Leave this blank if you want to use ${HOME}/public_html";
+read -p "Enter the HTML root: " htmlRoot;
+if [ $htmlRoot = "" ]
+	then
+	htmlRoot="${HOME}/public_html";
+fi
+htmlRoot="${htmlRoot%/}"; #remove any trailing slash
+pluginDir="${htmlRoot}/wp-content/plugins";
+echo; echo "Don't forget you need to create the database and add the user before the install will work.";
+read -p "Database name: " dbName;
+read -p "Database user: " dbUser;
+read -p "Database password: " dbPass;
+echo; echo "The theme name with no spaces or special characters. (Only - or _)";
+read -p "Theme name: " themeName;
+themeName=`echo $themeName | sed 's/ //g'`;
+
+echo; echo "Attempting to get .bashrc";
+echo "If you choose yes, a backup will be created.";
+read -p "Overwrite current .bashrc? [y/N]" newBashrc;
+if [[ $newBashrc = [yY] ]]
+	then
+	cp "{$HOME}/.bashrc" "{$HOME}/.bashrc.BACKUP.wpSetup";
+	mv bashrc "${HOME}/.bashrc";
+	echo "A backup of your .bashrc was created.";
+else
+	echo "Your current .bashrc will remain the same.";
+fi
+
+####################################
+### CLEAR THE WAY FOR OUR SCRIPT ##
+##################################
+
+# Get rid of Bluehost default files.
+echo; echo "This option will delete EVERY file and folder currently in your HTML root. (${htmlRoot})";
+read -p "Delete entire contents of HTML root? [y/N] " delHTML;
+if [[ $delHTML = [yY] ]]
+	then
+	rm -rf ${htmlRoot}/*;
+	rm -rf ${htmlRoot}/.??*;
+else
+	echo "Your HTML root will not be deleted.";
+fi
+
+
+# Get the latest version of WordPress
+echo; echo "Cloning the latest WordPress release";
+git clone https://github.com/WordPress/WordPress.git $htmlRoot/
+
+# Get rid of Hello Dolly ... I mean, come on!
+rm -rf "${htmlRoot}/wp-content/plugins/hello.php";
+
+####################################
+### GET OUR FAVORITE PLUGINS ######
+##################################
+
+echo; echo "Getting Some Plugins...";
+
+# Jetpack
+echo; echo "Cloning the latest version of Jetpack";
+git clone https://github.com/wp-plugins/jetpack.git $pluginDir/jetpack;
+
+# wp-maintenance-mode
+echo; echo "Cloning the latest version of  wp-maintenance-mode";
+git clone https://github.com/Designmodocom/WP-Maintenance-Mode.git $pluginDir/wp-maintenance-mode;
+
+# Master Slider
+echo; echo "Cloning the latest version master-slider";
+git clone https://github.com/wp-plugins/master-slider.git $pluginDir/master-slider;
+
+####################################
+### GET OUR FAVORITE THEME(S) #####
+##################################
+# Bones
+echo; echo "Cloning the latest version of Bones (a WordPress Theme for quick WP theme development)";
+git clone https://github.com/eddiemachado/bones.git $htmlRoot/wp-content/themes/$themeName;
+
+
+echo; echo "Setting up wp-config.php";
+sed 's/database_name_here/$dbName/g' $htmlRoot/wp-config-sample.php > $htmlRoot/wp-config.php;
+sed -i 's/username_here/$dbUser/g' $htmlRoot/wp-config.php;
+sed -i 's/password_here/$dbPass/g' $htmlRoot/wp-config.php;
+
+echo; echo " ... getting keys and salts";
+# A little bit about keys and salts
+# http://www.wpbeginner.com/beginners-guide/what-why-and-hows-of-wordpress-security-keys/
+
+perl -ne '
+    BEGIN {
+        $keysalts = qx(curl -sS https://api.wordpress.org/secret-key/1.1/salt) 
+    }
+    if ( $flipflop = ( m/AUTH_KEY/ .. m/NONCE_SALT/ ) ) {
+        if ( $flipflop =~ /E0$/ ) {
+            printf qq|%s|, $keysalts;
+        }
+        next;
+    }
+    printf qq|%s|, $_;
+' $htmlRoot/wp-config-sample.php > $htmlRoot/wp-config.php
+# END GETTING KEYS AND SALTS
+
+# If you want to use manual maintenance mode then uncomment the following two lines.
+# echo '<?php $upgrading = time(); ?>' > $htmlRoot/.maintenance.php;
+# echo "<h1>${themeName}</h1><p>${maintenanceMessage}</p>" > $htmlRoot/wp-content/maintenance.php
+
+# always clean up after yourself
+rm $htmlRoot/wp-config-sample.php;
