@@ -12,16 +12,16 @@ fi
 
 echo "Leave this blank if you want to use ${HOME}/public_html";
 read -p "Enter the HTML root directory: " htmlRoot;
-if [ $htmlRoot = "" ]
+if [ "${htmlRoot}" = "" ]
 	then
 	htmlRoot="${HOME}/public_html";
 fi
 
 htmlRoot="${htmlRoot%/}"; #remove any trailing slash
 
-if [ ! -d $htmlRoot ]
+if [ ! -d "${htmlRoot}" ]
 	then
-	mkdir $htmlRoot;
+	mkdir "${htmlRoot}";
 fi
 
 pluginDir="${htmlRoot}/wp-content/plugins";
@@ -38,7 +38,7 @@ echo "If you choose yes, a backup will be created.";
 read -p "Overwrite current .bashrc? [y/N]" newBashrc;
 if [[ $newBashrc = [yY] ]]
 	then
-	cp "{$HOME}/.bashrc" "{$HOME}/.bashrc.BACKUP.wpSetup";
+	cp "${HOME}/.bashrc" "${HOME}/.bashrc.BACKUP.wpSetup";
 	mv bashrc "${HOME}/.bashrc";
 	echo "A backup of your .bashrc was created.";
 else
@@ -80,7 +80,7 @@ git clone https://github.com/wp-plugins/jetpack.git $pluginDir/jetpack;
 
 # wp-maintenance-mode
 echo; echo "Cloning the latest version of  wp-maintenance-mode";
-git clone https://github.com/Designmodocom/WP-Maintenance-Mode.git $pluginDir/wp-maintenance-mode;
+git clone https://github.com/wp-plugins/lj-maintenance-mode.git $pluginDir/maintenance-mode;
 
 # Master Slider
 echo; echo "Cloning the latest version master-slider";

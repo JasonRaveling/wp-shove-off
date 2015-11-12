@@ -1,7 +1,7 @@
 # .bashrc
-# Git does not import dot files (hidden files) so this file will be moved after
-# the wpSetup script is run. This is a pretty basic .bashrc which you can edit
-# to your delight once you've cloned it.
+# Dot files (hidden files) and git are sometimes tricky so this file will
+# be moved after the wpSetup script is run. This is a pretty basic .bashrc
+# which you can edit to your delight once you've cloned it.
 
 # User specific aliases and functions
 alias mv='mv -i'
@@ -17,7 +17,7 @@ fi
 
 PS1='\u@\h$ '
 
-# Add ruby support for Bluehost
+# Add better ruby support for Bluehost
 # https://my.bluehost.com/cgi/help/rails
 
 export HPATH=$HOME
