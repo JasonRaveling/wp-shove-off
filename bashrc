@@ -15,14 +15,14 @@ if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
-PS1='\u@\h$ '
+# super simple prompt string
+PS1='\h$ '
 
 # Add better ruby support for Bluehost
 # https://my.bluehost.com/cgi/help/rails
-
-export HPATH=$HOME
-export GEM_HOME=$HPATH/ruby/gems
-export GEM_PATH=$GEM_HOME:/usr/lib64/ruby/gems/1.8
-export GEM_CACHE=$GEM_HOME/cache
-export PATH=$PATH:$HPATH/ruby/gems/bin
-export PATH=$PATH:$HPATH/ruby/gems  
+#export HPATH=$HOME
+#export GEM_HOME=$HPATH/ruby/gems
+#export GEM_PATH=$GEM_HOME:/usr/lib64/ruby/gems/1.8
+#export GEM_CACHE=$GEM_HOME/cache
+#export PATH=$PATH:$HPATH/ruby/gems/bin
+#export PATH=$PATH:$HPATH/ruby/gems  
